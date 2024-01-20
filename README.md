@@ -6,7 +6,7 @@ The tool is written in pure javascript and does not require any external librari
 
 ## Demo
 
-A demo of the tool can be found [here](https://luxeria.ch/luxlogo/).
+A demo of the tool can be found [here](https://luxeria.ch/) (TODO: Add link).
 
 ## Usage
 
@@ -20,9 +20,9 @@ Then instantiate the LuxLogo class and manipulate the variables. Finally call th
 
 ```javascript
 const logo = new LuxLogo();
-logo.rotation = 20;
+logo.rotation = 45;
 logo.color1 = "#ff0000";
-logo.numArrows = 5;
+logo.numArrows = 3;
 
 document.getElementById("logo").innerHTML = logo.generate();
 ```
