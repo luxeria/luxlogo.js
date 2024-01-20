@@ -2,6 +2,9 @@ class LuxLogo {
     constructor() {
         // Constructor with intial values
         this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        this.svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        this.svg.setAttribute("version", "1.1");
+        this.svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
         this.size = 600;
         this.color1 = "#000000";
         this.rotation = 0;
@@ -17,6 +20,7 @@ class LuxLogo {
         this.relArrowTipEnd = 50;
         this.relArrowNotchOffset = 3;
         this.relArrowBaseWidth = 13;
+        
         // Calculate absolute values from relative values
         this.relCalc();
     }
@@ -143,8 +147,7 @@ class LuxLogo {
 
     generate() {
 
-        this.svg.setAttribute("width", this.size);
-        this.svg.setAttribute("height", this.size);
+        this.svg.setAttribute("viewBox", `0 0 ${this.size} ${this.size}`);
 
         // Clear existing SVG contents
         this.svg.innerHTML = "";

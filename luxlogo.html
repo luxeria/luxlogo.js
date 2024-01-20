@@ -35,78 +35,79 @@
                         </div>
 
                         <hr />
-                        <h4>Absolute Dimensions:</h4>
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th style="width: 50%;">Parameter</th>
-                                    <th style="width: 50%;">Value</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Total Size:</td>
-                                    <td id="sizeOutput"></td>
-                                </tr>
-                                <tr>
-                                    <td>Spacing:</td>
-                                    <td id="spacingOutput"></td>
-                                </tr>
-                                <tr>
-                                    <td>Center is at:</td>
-                                    <td id="centerOutput"></td>
-                                </tr>
-                                <tr>
-                                    <td>Inner Circle (radius):</td>
-                                    <td id="innerCircleDiameterOutput"></td>
-                                </tr>
-                                <tr>
-                                    <td>Outer Circle (radius):</td>
-                                    <td id="outerCircleDiameterOutput"></td>
-                                </tr>
-                                <tr>
-                                    <td>Outer Circle (thickness):</td>
-                                    <td id="outerCircleThicknessOutput"></td>
-                                </tr>
-                                <tr>
-                                    <td>Arrow Tip Width:</td>
-                                    <td id="arrowTipWidthOutput"></td>
-                                </tr>
-                                <tr>
-                                    <td>Arrow Tip Start pos. (y):</td>
-                                    <td id="arrowTipStartOutput"></td>
-                                </tr>
-                                <tr>
-                                    <td>Arrow Tip End pos. (y):</td>
-                                    <td id="arrowTipEndOutput"></td>
-                                </tr>
-                                <tr>
-                                    <td>Arrow Notch Offset (y):</td>
-                                    <td id="arrowNotchOffsetOutput"></td>
-                                </tr>
-                                <tr>
-                                    <td>Arrow Base Offset Circle Segment:</td>
-                                    <td id="arrowBaseOffsetCircleSegmentOutput"></td>
-                                </tr>
-                                <tr>
-                                    <td>Arrow Base Height:</td>
-                                    <td id="arrowBaseHeightOutput"></td>
-                                </tr>
-                                <tr>
-                                    <td>Arrow Base Width:</td>
-                                    <td id="arrowBaseWidthOutput"></td>
-                                </tr>
-                                <tr>
-                                    <td>Arrow Base pos. (x):</td>
-                                    <td id="arrowBaseXOutput"></td>
-                                </tr>
-                                <tr>
-                                    <td>Arrow base pos. (y) :</td>
-                                    <td id="arrowBaseYOutput"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-
+                        <a onclick="toggleAbsoluteDimensions()" class="text-muted" style="cursor: pointer;">absolute dimensions</a>
+                        <div id="absoluteDimensions" style="display: none;">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50%;">Parameter</th>
+                                        <th style="width: 50%;">Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Total Size:</td>
+                                        <td id="sizeOutput"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Spacing:</td>
+                                        <td id="spacingOutput"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Center is at:</td>
+                                        <td id="centerOutput"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Inner Circle (radius):</td>
+                                        <td id="innerCircleDiameterOutput"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Outer Circle (radius):</td>
+                                        <td id="outerCircleDiameterOutput"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Outer Circle (thickness):</td>
+                                        <td id="outerCircleThicknessOutput"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Arrow Tip Width:</td>
+                                        <td id="arrowTipWidthOutput"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Arrow Tip Start pos. (y):</td>
+                                        <td id="arrowTipStartOutput"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Arrow Tip End pos. (y):</td>
+                                        <td id="arrowTipEndOutput"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Arrow Notch Offset (y):</td>
+                                        <td id="arrowNotchOffsetOutput"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Arrow Base Offset Circle Segment:</td>
+                                        <td id="arrowBaseOffsetCircleSegmentOutput"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Arrow Base Height:</td>
+                                        <td id="arrowBaseHeightOutput"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Arrow Base Width:</td>
+                                        <td id="arrowBaseWidthOutput"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Arrow Base pos. (x):</td>
+                                        <td id="arrowBaseXOutput"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Arrow base pos. (y) :</td>
+                                        <td id="arrowBaseYOutput"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
                     </div>
                 </div>
@@ -244,6 +245,7 @@
         // Generate the new SVG
         let result = luxLogo.generate();
         luxLogoContainer.innerHTML = result;
+        luxLogoContainer.getElementsByTagName("svg")[0].setAttribute("width", "100%");
 
         // Update dimensions table with new absolute values
         document.getElementById("sizeOutput").innerHTML = luxLogo.size + " px";
@@ -268,10 +270,10 @@
         const luxLogoSvg = document.getElementById("luxlogo").getElementsByTagName("svg")[0];
 
         // Serialize the SVG element, to blob, then simulate click for download
-        var serializer = new XMLSerializer();
-        var svgString = serializer.serializeToString(luxLogoSvg);
-        var svgBlob = new Blob([svgString], {type: "image/svg+xml;charset=utf-8"});
-        var downloadLink = document.createElement("a");
+        const serializer = new XMLSerializer();
+        const svgString = serializer.serializeToString(luxLogoSvg);
+        const svgBlob = new Blob([svgString], {type: "image/svg+xml;charset=utf-8"});
+        const downloadLink = document.createElement("a");
         downloadLink.href = URL.createObjectURL(svgBlob);
         downloadLink.download = "luxlogo_" + Date.now() + ".svg";
         document.body.appendChild(downloadLink);
@@ -280,6 +282,15 @@
         // Clean up
         document.body.removeChild(downloadLink);
         URL.revokeObjectURL(downloadLink.href);
+    }
+
+    function toggleAbsoluteDimensions() {
+        const absoluteDimensions = document.getElementById("absoluteDimensions");
+        if (absoluteDimensions.style.display === "none") {
+            absoluteDimensions.style.display = "block";
+        } else {
+            absoluteDimensions.style.display = "none";
+        }
     }
 
     // Initialization
