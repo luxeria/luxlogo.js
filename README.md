@@ -6,7 +6,7 @@ The tool is written in pure javascript and does not require any external librari
 
 ## Demo
 
-A demo of the tool can be found [here](https://luxeria.ch/) (TODO: Add link).
+A demo of the tool can be found [here](https://luxeria.ch/luxlogo.js/luxlogo.html).
 
 ## Usage
 
