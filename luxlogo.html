@@ -121,23 +121,6 @@
                     <div class="card-body">
                         
                         <form id="logoForm" onchange="luxLogoUpdate()" class="needs-validation" novalidate>
-                            <div class="mb-2">
-                                <label for="size" class="form-label">Size (pixel):</label>
-                                <input type="number" id="size" class="form-control" value="600" required>
-                                <div class="invalid-feedback">Please provide a valid size.</div>
-                            </div>
-
-                            <div class="mb-2">
-                                <label for="color1" class="form-label">Color:</label>
-                                <input type="color" id="color1" class="form-control" value="#eeeeee" required>
-                                <div class="invalid-feedback">Please provide a valid color.</div>
-                            </div>
-
-                            <div class="mb-2">
-                                <label for="borderThickness" class="form-label">Border Thickness (%):</label>
-                                <input type="number" id="borderThickness" class="form-control" value="0" required>
-                                <div class="invalid-feedback">Please provide a valid border thickness.</div>
-                            </div>
 
                             <div class="mb-2">
                                 <label for="rotation" class="form-label">Rotation (°):</label>
@@ -207,6 +190,26 @@
                                 <label for="arrowBaseWidth" class="form-label">Arrow Base Width (%):</label>
                                 <input type="number" id="arrowBaseWidth" class="form-control" value="13" required>
                                 <div class="invalid-feedback">Please provide a valid arrow base width.</div>
+                            </div>
+
+                            <br />
+
+                            <div class="mb-2">
+                                <label for="size" class="form-label">Size (pixel):</label>
+                                <input type="number" id="size" class="form-control" value="600" required>
+                                <div class="invalid-feedback">Please provide a valid size.</div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="color1" class="form-label">Color:</label>
+                                <input type="color" id="color1" class="form-control" value="#eeeeee" required>
+                                <div class="invalid-feedback">Please provide a valid color.</div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="borderThickness" class="form-label">Border (%):</label>
+                                <input type="number" id="borderThickness" class="form-control" value="0" required>
+                                <div class="invalid-feedback">Please provide a valid border thickness.</div>
                             </div>
 
                             <br />
