@@ -5,7 +5,7 @@ class LuxLogo {
         this.svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
         this.svg.setAttribute("version", "1.1");
         this.svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-        this.size = 600;
+        this.size = 512;
         this.color1 = "#000000";
         this.rotation = 0;
         this.center = this.size / 2;
@@ -18,7 +18,7 @@ class LuxLogo {
         this.relArrowTipWidth = 25;
         this.relArrowTipStart = 20;
         this.relArrowTipEnd = 50;
-        this.relArrowNotchOffset = 5;
+        this.relArrowNotchOffset = 6;
         this.relArrowBaseWidth = 12;
 
         // Calculate absolute values from relative values
@@ -92,10 +92,10 @@ class LuxLogo {
     // Logo specific functions
     createArrow() {
         const polygonPoints = [
-            [this.center, this.arrowTipEnd], 
-            [this.center + this.arrowTipWidth/2, this.arrowTipStart],
+            [this.center, this.arrowTipEnd],
+            [this.center + this.arrowTipWidth / 2, this.arrowTipStart],
             [this.center, this.arrowTipStart - this.arrowNotchOffset],
-            [this.center - this.arrowTipWidth/2, this.arrowTipStart]
+            [this.center - this.arrowTipWidth / 2, this.arrowTipStart]
         ];
         const arrowPolygon = this.createPolygon(polygonPoints);
         const arrowBase = this.createRectangle(this.arrowBaseX, this.arrowBaseY, this.arrowBaseWidth, this.arrowBaseHeight);
@@ -140,7 +140,7 @@ class LuxLogo {
         arrows.setAttribute("stroke", "black");
         arrows.setAttribute("stroke-width", this.spacing);
 
-        const circle = this.createCircle(this.center, this.center, this.outerCircleDiameter - this.outerCircleThickness*2);
+        const circle = this.createCircle(this.center, this.center, this.outerCircleDiameter - this.outerCircleThickness * 2);
         circle.setAttribute("fill", "black");
 
         return this.createMask(id, canvas, arrows, circle);
@@ -176,5 +176,5 @@ class LuxLogo {
         return this.svg.outerHTML;
 
     }
-    
+
 }

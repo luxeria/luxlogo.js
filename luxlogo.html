@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -9,15 +10,19 @@
     <title>LuxLogo.js - Luxeria Logo Generator</title>
 
     <script src="js/luxlogo.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
 
 </head>
+
 <body data-bs-theme="dark">
 
     <div class="container py-5 text-center">
         <h1>luxlogo.js</h1>
-        <p class="lead">A Javascript library to generate (per-) versions of the <a href="https://luxeria.ch/">Luxeria</a> logo with SVG.<br /> This demo page provides a form for all the parameters. Feel free to play with them!</p>
+        <p class="lead">A Javascript library to generate (per-) versions of the <a
+                href="https://luxeria.ch/">Luxeria</a> logo with SVG.<br /> This demo page provides a form for all the
+            parameters. Feel free to play with them!</p>
     </div>
 
     <div class="container">
@@ -28,24 +33,173 @@
                         <h4 class="my-0 fw-normal">Preview</h4>
                     </div>
                     <div class="card-body">
-                        
+
                         <div id="luxlogo">
                             <!-- generated SVG goes here -->
                         </div>
 
                         <div class="text-center">
-                            <button type="button" onclick="luxLogoUpdate()" class="btn btn-outline-success">⟳ Update</button> 
-                            <button type="button" onclick="luxLogoDownload()" class="btn btn-success">Download (.svg)</button>
+                            <button type="button" onclick="luxLogoUpdate()" class="btn btn-outline-success">⟳
+                                Update</button>
+                            <button type="button" onclick="luxLogoDownload('svg')" class="btn btn-success">Download
+                                (.svg)</button>
+                            <button type="button" onclick="luxLogoDownload('png')" class="btn btn-success">Download
+                                (.png)</button>
                         </div>
                     </div>
 
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-4 rounded-3 shadow-sm">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">Controls</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <form id="logoForm" onchange="luxLogoUpdate()" class="needs-validation" novalidate>
+
+                            <!-- General controls -->
+                            <div class="row">
+
+                                <div class="col-md-6 mb-2">
+                                    <label for="size" class="form-label">Total Size:</label>
+                                    <div class="input-group">
+                                        <input type="number" id="size" class="form-control" value="512" required>
+                                        <span class="input-group-text">px</span>
+                                    </div>
+                                    <div class="invalid-feedback">Please provide a valid size.</div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="spacing" class="form-label">Spacing:</label>
+                                    <div class="input-group">
+                                        <input type="number" id="spacing" class="form-control" value="8" required>
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <div class="invalid-feedback">Please provide a valid spacing.</div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="numArrows" class="form-label">Number of Arrows:</label>
+                                    <div class="input-group">
+                                        <input type="number" id="numArrows" class="form-control" value="3" required>
+                                        <span class="input-group-text">#</span>
+                                    </div>
+                                    <div class="invalid-feedback">Please provide a valid number of arrows.</div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="rotation" class="form-label">Rotation:</label>
+                                    <div class="input-group">
+                                        <input type="number" id="rotation" class="form-control" value="0" required>
+                                        <span class="input-group-text">°</span>
+                                    </div>
+                                    <div class="invalid-feedback">Please provide a valid rotation.</div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="color1" class="form-label">Primary Color:</label>
+                                    <div class="input-group">
+                                        <input type="color" id="color1" class="form-control" value="#eeeeee" style="height: 38px;" required>
+                                        <span class="input-group-text">hex</span>
+                                    </div>
+                                    <div class="invalid-feedback">Please provide a valid color.</div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="borderThickness" class="form-label">Border Thickness:</label>
+                                    <div class="input-group">
+                                        <input type="number" id="borderThickness" class="form-control" value="0" required>
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <div class="invalid-feedback">Please provide a valid border thickness.</div>
+                                </div>
+
+                            </div>
+
+                            <!-- Circle controls -->
+                            <div class="row mt-4">
+
+                                <div class="col-md-6 mb-2">
+                                    <label for="innerCircleDiameter" class="form-label">Inner Circle Diameter:</label>
+                                    <div class="input-group">
+                                        <input type="number" id="innerCircleDiameter" class="form-control" value="24" required>
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <div class="invalid-feedback">Please provide a valid inner circle diameter.</div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="outerCircleDiameter" class="form-label">Outer Circle Diameter:</label>
+                                    <div class="input-group">
+                                        <input type="number" id="outerCircleDiameter" class="form-control" value="84" required>
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <div class="invalid-feedback">Please provide a valid outer circle diameter.</div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="outerCircleThickness" class="form-label">Outer Ring Thickness:</label>
+                                    <div class="input-group">
+                                        <input type="number" id="outerCircleThickness" class="form-control" value="12" required>
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <div class="invalid-feedback">Please provide a valid outer ring thickness.</div>
+                                </div>
+
+                            </div>
+
+                            <!-- Arrow controls -->
+                            <div class="row mt-4">
+
+                                <div class="col-md-6 mb-2">
+                                    <label for="arrowTipWidth" class="form-label">Arrow Tip Width:</label>
+                                    <div class="input-group">
+                                        <input type="number" id="arrowTipWidth" class="form-control" value="24" required>
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <div class="invalid-feedback">Please provide a valid arrow tip width.</div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="arrowBaseWidth" class="form-label">Arrow Base Width:</label>
+                                    <div class="input-group">
+                                        <input type="number" id="arrowBaseWidth" class="form-control" value="12" required>
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <div class="invalid-feedback">Please provide a valid arrow base width.</div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="arrowTipStart" class="form-label">Arrow Tip Start (from center):</label>
+                                    <div class="input-group">
+                                        <input type="number" id="arrowTipStart" class="form-control" value="20" required>
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <div class="invalid-feedback">Please provide a valid arrow tip start position.</div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="arrowTipEnd" class="form-label">Arrow Tip End (from center):</label>
+                                    <div class="input-group">
+                                        <input type="number" id="arrowTipEnd" class="form-control" value="50" required>
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <div class="invalid-feedback">Please provide a valid arrow tip end position.</div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="arrowNotchOffset" class="form-label">Arrow Notch Offset:</label>
+                                    <div class="input-group">
+                                        <input type="number" id="arrowNotchOffset" class="form-control" value="6" required>
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <div class="invalid-feedback">Please provide a valid arrow notch offset.</div>
+                                </div>
+
+                            </div>
+
+                        </form>
+
+                    </div>
                 </div>
 
                 <div class="card mb-4 rounded-3 shadow-sm">
                     <div class="card-header py-3">
                         <h4 class="my-0 fw-normal">
-                            Dimensions 
-                            <a onclick="toggleAbsoluteDimensions()" class="text-muted" style="cursor: pointer;">[toggle]</a>
+                            Dimensions
+                            <a onclick="toggleAbsoluteDimensions()" class="text-muted"
+                                style="cursor: pointer;">[toggle]</a>
                         </h4>
                     </div>
                     <div class="card-body" id="absoluteDimensions" style="display: none;">
@@ -123,115 +277,14 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card mb-4 rounded-3 shadow-sm">
-                    <div class="card-header py-3">
-                        <h4 class="my-0 fw-normal">Controls</h4>
-                    </div>
-                    <div class="card-body">
-                        
-                        <form id="logoForm" onchange="luxLogoUpdate()" class="needs-validation" novalidate>
 
-                            <div class="mb-2">
-                                <label for="rotation" class="form-label">Rotation (°):</label>
-                                <input type="number" id="rotation" class="form-control" value="0" required>
-                                <div class="invalid-feedback">Please provide a valid rotation.</div>
-                            </div>  
-
-                            <div class="mb-2">
-                                <label for="spacing" class="form-label">Spacing (%):</label>
-                                <input type="number" id="spacing" class="form-control" value="8" required>
-                                <div class="invalid-feedback">Please provide a valid spacing.</div>
-                            </div>
-
-                            <div class="mb-2">
-                                <label for="numArrows" class="form-label">Number of Arrows:</label>
-                                <input type="number" id="numArrows" class="form-control" value="3" required>
-                                <div class="invalid-feedback">Please provide a valid number of arrows.</div>
-                            </div>
-
-                            <br />
-
-                            <div class="mb-2">
-                                <label for="innerCircleDiameter" class="form-label">Inner Circle Diameter (%):</label>
-                                <input type="number" id="innerCircleDiameter" class="form-control" value="24" required>
-                                <div class="invalid-feedback">Please provide a valid inner circle diameter.</div>
-                            </div>
-
-                            <div class="mb-2">
-                                <label for="outerCircleDiameter" class="form-label">Outer Ring Diameter (%):</label>
-                                <input type="number" id="outerCircleDiameter" class="form-control" value="85" required>
-                                <div class="invalid-feedback">Please provide a valid outer ring diameter.</div>
-                            </div>
-
-                            <div class="mb-2">
-                                <label for="outerCircleThickness" class="form-label">Outer Ring Thickness (%):</label>
-                                <input type="number" id="outerCircleThickness" class="form-control" value="12" required>
-                                <div class="invalid-feedback">Please provide a valid outer ring thickness.</div>
-                            </div>
-
-                            <br />
-
-                            <div class="mb-2">
-                                <label for="arrowTipWidth" class="form-label">Arrow Tip Width (%):</label>
-                                <input type="number" id="arrowTipWidth" class="form-control" value="25" required>
-                                <div class="invalid-feedback">Please provide a valid arrow tip width.</div>
-                            </div>
-
-                            <div class="mb-2">
-                                <label for="arrowTipStart" class="form-label">Arrow Tip Start (% from center):</label>
-                                <input type="number" id="arrowTipStart" class="form-control" value="20" required>
-                                <div class="invalid-feedback">Please provide a valid arrow tip start position.</div>
-                            </div>
-
-                            <div class="mb-2">
-                                <label for="arrowTipEnd" class="form-label">Arrow Tip End (% from center):</label>
-                                <input type="number" id="arrowTipEnd" class="form-control" value="50" required>
-                                <div class="invalid-feedback">Please provide a valid arrow tip end position.</div>
-                            </div>
-
-                            <div class="mb-2">
-                                <label for="arrowNotchOffset" class="form-label">Arrow Notch Offset (% from center):</label>
-                                <input type="number" id="arrowNotchOffset" class="form-control" value="5" required>
-                                <div class="invalid-feedback">Please provide a valid arrow notch offset.</div>
-                            </div>
-
-                            <div class="mb-2">
-                                <label for="arrowBaseWidth" class="form-label">Arrow Base Width (%):</label>
-                                <input type="number" id="arrowBaseWidth" class="form-control" value="12" required>
-                                <div class="invalid-feedback">Please provide a valid arrow base width.</div>
-                            </div>
-
-                            <br />
-
-                            <div class="mb-2">
-                                <label for="size" class="form-label">Total Size (pixel):</label>
-                                <input type="number" id="size" class="form-control" value="600" required>
-                                <div class="invalid-feedback">Please provide a valid size.</div>
-                            </div>
-
-                            <div class="mb-2">
-                                <label for="color1" class="form-label">Primary Color:</label>
-                                <input type="color" id="color1" class="form-control" value="#eeeeee" required style="width: 60px;">
-                                <div class="invalid-feedback">Please provide a valid color.</div>
-                            </div>
-
-                            <div class="mb-2">
-                                <label for="borderThickness" class="form-label">Border Thickness (%):</label>
-                                <input type="number" id="borderThickness" class="form-control" value="0" required>
-                                <div class="invalid-feedback">Please provide a valid border thickness.</div>
-                            </div>
-                        </form>
-
-                    </div>
-                </div>
-            </div>
         </div>
 
-        <footer class="pt-3 my-5 text-muted border-top text-center">
-            <a href="https://luxeria.ch/">Luxeria.ch</a> - <a href="https://github.com/luxeria/luxlogo.js">Github</a> - <a href="https://github.com/luxeria/luxlogo.js/blob/main/LICENSE">GNU GPL v3.0</a>
+        <footer class="pt-3 my-5 text-muted text-center">
+            <a href="https://luxeria.ch/">Luxeria.ch</a> - <a href="https://github.com/luxeria/luxlogo.js">Github</a> -
+            <a href="https://github.com/luxeria/luxlogo.js/blob/main/LICENSE">GNU GPL v3.0</a>
         </footer>
-    
+
     </div>
 
     <script>
@@ -281,26 +334,50 @@
 
         }
 
-        function luxLogoDownload() {
+        function luxLogoDownload(type = 'svg') {
             const luxLogoSvg = document.getElementById("luxlogo").getElementsByTagName("svg")[0];
             luxLogoSvg.setAttribute("height", luxLogo.size);
             luxLogoSvg.setAttribute("width", luxLogo.size);
 
-            // Serialize the SVG element, to blob, then simulate click for download
+            // Serialize the SVG element
             const serializer = new XMLSerializer();
             const svgString = serializer.serializeToString(luxLogoSvg);
-            const svgBlob = new Blob([svgString], {type: "image/svg+xml;charset=utf-8"});
-            const downloadLink = document.createElement("a");
-            downloadLink.href = URL.createObjectURL(svgBlob);
-            downloadLink.download = "luxlogo_" + Date.now() + ".svg";
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
+
+            // Download handler
+            function triggerDownload(blob, extension) {
+                const downloadLink = document.createElement("a");
+                downloadLink.href = URL.createObjectURL(blob);
+                downloadLink.download = "luxlogo_" + Date.now() + "." + extension;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                // Clean up
+                document.body.removeChild(downloadLink);
+                URL.revokeObjectURL(downloadLink.href);
+            }
+
+            if (type === 'svg') {
+                // Download as SVG
+                const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+                triggerDownload(svgBlob, 'svg');
+            } else if (type === 'png') {
+                // Convert SVG to PNG and download
+                const canvas = document.createElement('canvas');
+                canvas.width = luxLogo.size;
+                canvas.height = luxLogo.size;
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                img.onload = () => {
+                    ctx.drawImage(img, 0, 0);
+                    canvas.toBlob((blob) => {
+                        triggerDownload(blob, 'png');
+                    });
+                };
+                img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
+            }
 
             // Clean up
             luxLogoSvg.removeAttribute("height");
             luxLogoSvg.removeAttribute("width");
-            document.body.removeChild(downloadLink);
-            URL.revokeObjectURL(downloadLink.href);
         }
 
         function toggleAbsoluteDimensions() {
@@ -319,4 +396,5 @@
 
     </script>
 </body>
+
 </html>
