@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="luxlogo.js - Luxeria Logo Generator written in Javascript">
+    <meta name="author" content="n0ctu">
+
+    <title>LuxLogo.js - Luxeria Logo Generator</title>
+
+    <script src="js/luxlogo.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+</head>
+<body data-bs-theme="dark">
+
+    <div class="container py-5 text-center">
+        <h1>luxlogo.js</h1>
+        <p class="lead">A tool to generate (per-) versions the <a href="https://luxeria.ch/">Luxeria</a> logo in SVG format. Feel free to play with the parameters! <small class="text-muted">Do not overdo it...</small></p>
+    </div>
+
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-2 mb-3">
+            <div class="col-md-6">
+                <div class="card mb-4 rounded-3 shadow-sm">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">Preview</h4>
+                    </div>
+                    <div class="card-body">
+                        
+                        <div id="luxlogo">
+                            <svg width="600" height="600">
+                                
+                            </svg>
+                        </div>
+
+                        <hr />
+                        <h4>Absolute Dimensions:</h4>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50%;">Parameter</th>
+                                    <th style="width: 50%;">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Total Size:</td>
+                                    <td id="sizeOutput"></td>
+                                </tr>
+                                <tr>
+                                    <td>Spacing:</td>
+                                    <td id="spacingOutput"></td>
+                                </tr>
+                                <tr>
+                                    <td>Center is at:</td>
+                                    <td id="centerOutput"></td>
+                                </tr>
+                                <tr>
+                                    <td>Inner Circle (radius):</td>
+                                    <td id="innerCircleDiameterOutput"></td>
+                                </tr>
+                                <tr>
+                                    <td>Outer Circle (radius):</td>
+                                    <td id="outerCircleDiameterOutput"></td>
+                                </tr>
+                                <tr>
+                                    <td>Outer Circle (thickness):</td>
+                                    <td id="outerCircleThicknessOutput"></td>
+                                </tr>
+                                <tr>
+                                    <td>Arrow Tip Width:</td>
+                                    <td id="arrowTipWidthOutput"></td>
+                                </tr>
+                                <tr>
+                                    <td>Arrow Tip Start pos. (y):</td>
+                                    <td id="arrowTipStartOutput"></td>
+                                </tr>
+                                <tr>
+                                    <td>Arrow Tip End pos. (y):</td>
+                                    <td id="arrowTipEndOutput"></td>
+                                </tr>
+                                <tr>
+                                    <td>Arrow Notch Offset (y):</td>
+                                    <td id="arrowNotchOffsetOutput"></td>
+                                </tr>
+                                <tr>
+                                    <td>Arrow Base Offset Circle Segment:</td>
+                                    <td id="arrowBaseOffsetCircleSegmentOutput"></td>
+                                </tr>
+                                <tr>
+                                    <td>Arrow Base Height:</td>
+                                    <td id="arrowBaseHeightOutput"></td>
+                                </tr>
+                                <tr>
+                                    <td>Arrow Base Width:</td>
+                                    <td id="arrowBaseWidthOutput"></td>
+                                </tr>
+                                <tr>
+                                    <td>Arrow Base pos. (x):</td>
+                                    <td id="arrowBaseXOutput"></td>
+                                </tr>
+                                <tr>
+                                    <td>Arrow base pos. (y) :</td>
+                                    <td id="arrowBaseYOutput"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-4 rounded-3 shadow-sm">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">Controls</h4>
+                    </div>
+                    <div class="card-body">
+                        
+                        <form id="logoForm" onchange="luxLogoUpdate()" class="needs-validation" novalidate>
+                            <div class="mb-2">
+                                <label for="size" class="form-label">Size (pixel):</label>
+                                <input type="number" id="size" class="form-control" value="600" required>
+                                <div class="invalid-feedback">Please provide a valid size.</div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="color1" class="form-label">Color:</label>
+                                <input type="color" id="color1" class="form-control" value="#eeeeee" required>
+                                <div class="invalid-feedback">Please provide a valid color.</div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="borderThickness" class="form-label">Border Thickness (%):</label>
+                                <input type="number" id="borderThickness" class="form-control" value="0" required>
+                                <div class="invalid-feedback">Please provide a valid border thickness.</div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="rotation" class="form-label">Rotation (°):</label>
+                                <input type="number" id="rotation" class="form-control" value="0" required>
+                                <div class="invalid-feedback">Please provide a valid rotation.</div>
+                            </div>  
+
+                            <div class="mb-2">
+                                <label for="spacing" class="form-label">Spacing (%):</label>
+                                <input type="number" id="spacing" class="form-control" value="8" required>
+                                <div class="invalid-feedback">Please provide a valid spacing.</div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="numArrows" class="form-label">Number of Arrows:</label>
+                                <input type="number" id="numArrows" class="form-control" value="3" required>
+                                <div class="invalid-feedback">Please provide a valid number of arrows.</div>
+                            </div>
+
+                            <br />
+
+                            <div class="mb-2">
+                                <label for="innerCircleDiameter" class="form-label">Inner Circle Diameter (%):</label>
+                                <input type="number" id="innerCircleDiameter" class="form-control" value="25" required>
+                                <div class="invalid-feedback">Please provide a valid inner circle diameter.</div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="outerCircleDiameter" class="form-label">Outer Ring Diameter (%):</label>
+                                <input type="number" id="outerCircleDiameter" class="form-control" value="85" required>
+                                <div class="invalid-feedback">Please provide a valid outer ring diameter.</div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="outerCircleThickness" class="form-label">Outer Ring Thickness (%):</label>
+                                <input type="number" id="outerCircleThickness" class="form-control" value="12" required>
+                                <div class="invalid-feedback">Please provide a valid outer ring thickness.</div>
+                            </div>
+
+                            <br />
+
+                            <div class="mb-2">
+                                <label for="arrowTipWidth" class="form-label">Arrow Tip Width (%):</label>
+                                <input type="number" id="arrowTipWidth" class="form-control" value="25" required>
+                                <div class="invalid-feedback">Please provide a valid arrow tip width.</div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="arrowTipStart" class="form-label">Arrow Tip Start (% from center):</label>
+                                <input type="number" id="arrowTipStart" class="form-control" value="20" required>
+                                <div class="invalid-feedback">Please provide a valid arrow tip start position.</div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="arrowTipEnd" class="form-label">Arrow Tip End (% from center):</label>
+                                <input type="number" id="arrowTipEnd" class="form-control" value="50" required>
+                                <div class="invalid-feedback">Please provide a valid arrow tip end position.</div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="arrowNotchOffset" class="form-label">Arrow Notch Offset (% from center):</label>
+                                <input type="number" id="arrowNotchOffset" class="form-control" value="3" required>
+                                <div class="invalid-feedback">Please provide a valid arrow notch offset.</div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="arrowBaseWidth" class="form-label">Arrow Base Width (%):</label>
+                                <input type="number" id="arrowBaseWidth" class="form-control" value="13" required>
+                                <div class="invalid-feedback">Please provide a valid arrow base width.</div>
+                            </div>
+
+                            <br />
+                            <button type="button" onclick="luxLogoUpdate()" class="btn btn-outline-success">⟳ Preview</button> 
+                            <button type="button" onclick="luxLogoDownload()" class="btn btn-success">↓ Download (SVG)</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<script>
+
+    // Reads the form and updates the logo
+    function luxLogoUpdate() {
+
+        // Read values from the form
+        luxLogo.size = parseFloat(document.getElementById("size").value);
+        luxLogo.color1 = document.getElementById("color1").value;
+        luxLogo.rotation = parseFloat(document.getElementById("rotation").value);
+        luxLogo.numArrows = parseInt(document.getElementById("numArrows").value);
+        luxLogo.relSpacing = parseFloat(document.getElementById("spacing").value);
+        luxLogo.relBorderThickness = parseFloat(document.getElementById("borderThickness").value);
+        luxLogo.relInnerCircleDiameter = parseFloat(document.getElementById("innerCircleDiameter").value);
+        luxLogo.relOuterCircleDiameter = parseFloat(document.getElementById("outerCircleDiameter").value);
+        luxLogo.relOuterCircleThickness = parseFloat(document.getElementById("outerCircleThickness").value);
+        luxLogo.relArrowTipWidth = parseFloat(document.getElementById("arrowTipWidth").value);
+        luxLogo.relArrowTipStart = parseFloat(document.getElementById("arrowTipStart").value);
+        luxLogo.relArrowTipEnd = parseFloat(document.getElementById("arrowTipEnd").value);
+        luxLogo.relArrowNotchOffset = parseFloat(document.getElementById("arrowNotchOffset").value);
+        luxLogo.relArrowBaseWidth = parseFloat(document.getElementById("arrowBaseWidth").value);
+
+        // Calculate new pixel values from relative values
+        luxLogo.relCalc();
+
+        // Generate the new SVG
+        let result = luxLogo.generate();
+        luxLogoContainer.innerHTML = result;
+
+        // Update dimensions table with new absolute values
+        document.getElementById("sizeOutput").innerHTML = luxLogo.size + " px";
+        document.getElementById("spacingOutput").innerHTML = luxLogo.spacing + " px";
+        document.getElementById("centerOutput").innerHTML = luxLogo.center + " px";
+        document.getElementById("innerCircleDiameterOutput").innerHTML = luxLogo.innerCircleDiameter + " px";
+        document.getElementById("outerCircleDiameterOutput").innerHTML = luxLogo.outerCircleDiameter + " px";
+        document.getElementById("outerCircleThicknessOutput").innerHTML = luxLogo.outerCircleThickness + " px";
+        document.getElementById("arrowTipWidthOutput").innerHTML = luxLogo.arrowTipWidth + " px";
+        document.getElementById("arrowTipStartOutput").innerHTML = luxLogo.arrowTipStart + " px";
+        document.getElementById("arrowTipEndOutput").innerHTML = luxLogo.arrowTipEnd + " px";
+        document.getElementById("arrowNotchOffsetOutput").innerHTML = luxLogo.arrowNotchOffset + " px";
+        document.getElementById("arrowBaseOffsetCircleSegmentOutput").innerHTML = luxLogo.arrowBaseOffsetCircleSegment + " px";
+        document.getElementById("arrowBaseHeightOutput").innerHTML = luxLogo.arrowBaseHeight + " px";
+        document.getElementById("arrowBaseWidthOutput").innerHTML = luxLogo.arrowBaseWidth + " px";
+        document.getElementById("arrowBaseXOutput").innerHTML = luxLogo.arrowBaseX + " px";
+        document.getElementById("arrowBaseYOutput").innerHTML = luxLogo.arrowBaseY + " px";
+
+    }
+
+    function luxLogoDownload() {
+        const luxLogoSvg = document.getElementById("luxlogo").getElementsByTagName("svg")[0];
+
+        // Serialize the SVG element, to blob, then simulate click for download
+        var serializer = new XMLSerializer();
+        var svgString = serializer.serializeToString(luxLogoSvg);
+        var svgBlob = new Blob([svgString], {type: "image/svg+xml;charset=utf-8"});
+        var downloadLink = document.createElement("a");
+        downloadLink.href = URL.createObjectURL(svgBlob);
+        downloadLink.download = "luxlogo_" + Date.now() + ".svg";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+
+        // Clean up
+        document.body.removeChild(downloadLink);
+        URL.revokeObjectURL(downloadLink.href);
+    }
+
+    // Initialization
+    const luxLogoContainer = document.getElementById("luxlogo");
+    const luxLogo = new LuxLogo();
+    luxLogoUpdate();
+
+</script>
+</body>
+</html>
