@@ -12,20 +12,21 @@ class LuxLogo {
         this.numArrows = 3;
         this.relBorderThickness = 0;
         this.relSpacing = 8;
-        this.relInnerCircleDiameter = 25;
+        this.relInnerCircleDiameter = 24;
         this.relOuterCircleDiameter = 85;
         this.relOuterCircleThickness = 12;
         this.relArrowTipWidth = 25;
         this.relArrowTipStart = 20;
         this.relArrowTipEnd = 50;
-        this.relArrowNotchOffset = 3;
-        this.relArrowBaseWidth = 13;
-        
+        this.relArrowNotchOffset = 5;
+        this.relArrowBaseWidth = 12;
+
         // Calculate absolute values from relative values
         this.relCalc();
     }
 
     relCalc() {
+        this.center = this.size / 2;
         this.spacing = this.size * this.relSpacing / 100;
         this.borderThickness = this.size * this.relBorderThickness / 100;
         this.innerCircleDiameter = this.size * this.relInnerCircleDiameter / 100;
@@ -147,6 +148,7 @@ class LuxLogo {
 
     generate() {
 
+        // Set the new SVG viewBox size
         this.svg.setAttribute("viewBox", `0 0 ${this.size} ${this.size}`);
 
         // Clear existing SVG contents
@@ -174,4 +176,5 @@ class LuxLogo {
         return this.svg.outerHTML;
 
     }
+    
 }

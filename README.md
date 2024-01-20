@@ -1,14 +1,14 @@
 # luxlogo.js
 
-A javascript tool to generate (per-) versions of the [Luxeria](https://luxeria.ch/) logo in SVG format. The main part (luxlogo.js) generates SVG XML code, which can be used in HTML files. The XML output can be serialized to a file and create actual printable/cuttable SVG files.
+A javascript library to generate (per-) versions of the [Luxeria](https://luxeria.ch/) logo as scalable vector graphics. The library (luxlogo.js) generates SVG/XML, which can be used in HTML files. The XML output can be serialized and exported to a file to get a printable/cuttable .svg-file.
 
-The tool is written in pure javascript and does not require any external libraries other than libraries available in modern browsers. The idea originated from the challenge to implement the logo in [OpenSCAD](https://github.com/n0ctu/OpenSCAD-Models/tree/main/Luxeria%20Logo).
+The library is written in pure javascript and does not require any external libraries other than libraries available in modern browsers. The idea originated from the challenge to implement the Luxeria logo in [OpenSCAD](https://github.com/n0ctu/OpenSCAD-Models/tree/main/Luxeria%20Logo).
 
 ## Demo
 
-A demo of the tool can be found [here](https://luxeria.ch/luxlogo.js/luxlogo.html).
+A demo site utilizing all parameters of the library can be found [here](https://luxeria.ch/luxlogo.js/luxlogo.html).
 
-## Usage
+## Usage in other projects
 
 Include the luxlogo.js file in your HTML page:
 
@@ -16,7 +16,7 @@ Include the luxlogo.js file in your HTML page:
 <script src="luxlogo.js"></script>
 ```
 
-Then instantiate the LuxLogo class and manipulate the variables. Finally call the generate() method which returns the SVG XML code.
+Then instantiate the LuxLogo class and manipulate the variables. Finally call the generate() method which returns SVG/XML.
 
 ```javascript
 const logo = new LuxLogo();
@@ -29,7 +29,7 @@ document.getElementById("logo").innerHTML = logo.generate();
 
 ## Variables / Parameters
 
-All relative variables are relative to the size variable.
+All `rel`-variables are relative to the `size`-variable.
 
 | Variable                 | Description                                | Default     |
 | ------------------------ | ------------------------------------------ | ----------- |
@@ -50,5 +50,6 @@ All relative variables are relative to the size variable.
 
 ## Todo
 
+- [x] Fix sizing issues, display size, viewport and size of the serialized SVG file
 - [ ] Fix masking/grouping to allow for proper borders
-- [ ] Add support for different colors for each part (gradients?)
+- [ ] Add support for different colors for each part (gradient support maybe?)
