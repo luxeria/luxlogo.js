@@ -1,0 +1,41 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg" version="1.1" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512" fill="#eeeeee" stroke="black" stroke-width="10.24">
+	<circle cx="256" cy="256" r="61.44"></circle>
+	<mask id="arrowMask">
+		<rect x="0" y="0" width="512" height="512" fill="white"></rect>
+		<circle cx="256" cy="256" r="81.92" fill="black"></circle>
+	</mask>
+	<g>
+		<g mask="url(#arrowMask)" transform="rotate(0, 256, 256)">
+			<polygon points="256,0 317.44,153.6 256,122.88 194.56,153.6"></polygon>
+			<rect x="225.28" y="121.88000000000001" width="61.44" height="77.39662577490476"></rect>
+		</g>
+		<g mask="url(#arrowMask)" transform="rotate(120, 256, 256)">
+			<polygon points="256,0 317.44,153.6 256,122.88 194.56,153.6"></polygon>
+			<rect x="225.28" y="121.88000000000001" width="61.44" height="77.39662577490476"></rect>
+		</g>
+		<g mask="url(#arrowMask)" transform="rotate(240, 256, 256)">
+			<polygon points="256,0 317.44,153.6 256,122.88 194.56,153.6"></polygon>
+			<rect x="225.28" y="121.88000000000001" width="61.44" height="77.39662577490476"></rect>
+		</g>
+	</g>
+	<mask id="outerRingMask">
+		<rect x="0" y="0" width="512" height="512" fill="white"></rect>
+		<g fill="black" stroke="black" stroke-width="40.96">
+			<g mask="url(#arrowMask)" transform="rotate(0, 256, 256)">
+				<polygon points="256,0 317.44,153.6 256,122.88 194.56,153.6"></polygon>
+				<rect x="225.28" y="121.88000000000001" width="61.44" height="77.39662577490476"></rect>
+			</g>
+			<g mask="url(#arrowMask)" transform="rotate(120, 256, 256)">
+				<polygon points="256,0 317.44,153.6 256,122.88 194.56,153.6"></polygon>
+				<rect x="225.28" y="121.88000000000001" width="61.44" height="77.39662577490476"></rect>
+			</g>
+			<g mask="url(#arrowMask)" transform="rotate(240, 256, 256)">
+				<polygon points="256,0 317.44,153.6 256,122.88 194.56,153.6"></polygon>
+				<rect x="225.28" y="121.88000000000001" width="61.44" height="77.39662577490476"></rect>
+			</g>
+		</g>
+		<circle cx="256" cy="256" r="153.6" fill="black"></circle>
+	</mask>
+	<circle cx="256" cy="256" r="215.04" mask="url(#outerRingMask)"></circle>
+</svg>
