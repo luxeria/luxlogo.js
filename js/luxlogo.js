@@ -151,7 +151,8 @@ class LuxLogo {
         this.relArrowBaseWidth = 12;
 
         // Calculate absolute values from relative values
-        this.absCalc();
+        //ToDo: Check if we can delete this:
+        //this.absCalc(); // Does not seem to be necessary
     }
 
     absCalc() {
@@ -179,39 +180,117 @@ class LuxLogo {
         this.arrowBaseY = this.center - this.innerCircleDiameter / 2 - this.spacing + this.arrowBaseOffsetCircleSegment ;
 
         // Outer Ring Part Calculations
-        // Todo: :(
+        
+        this.angle = 2*Math.PI / this.numArrows;
+
+        // Step 1: Calculate a parallel line to the side of the arrow, with distance "spacing"
+        // Idea: Create a nomalized vector, perpendicular to the arrow-side. Use it to offset the starting and endpoint
+        let arrowStartX = this.center - this.arrowTipWidth / 2;
+        let arrowStartY = this.arrowTipStart;
+        let arrowEndX = this.center;
+        let arrowEndY =  this.arrowTipEnd;
+
+        // Vector along the arrow
+        let arrowVectorX = arrowStartX - arrowEndX;
+        let arrowVectorY = arrowStartY - arrowEndY;
+        // Normalize the vector (i.e. make it's length=1)
+        let n = Math.sqrt(arrowVectorX*arrowVectorX + arrowVectorY*arrowVectorY);
+        arrowVectorX = arrowVectorX/n;
+        arrowVectorY = arrowVectorY/n;
+        // rotate it by 90° CCW
+        let arrowVectorPX = -arrowVectorY;
+        let arrowVectorPY = arrowVectorX;
+
+        // Calculate Parallel line point 1 and point 2
+        this.p1X = arrowStartX + arrowVectorPX * this.spacing;
+        this.p1Y = arrowStartY + arrowVectorPY * this.spacing;
+        this.p2X = arrowEndX + arrowVectorPX * this.spacing;
+        this.p2Y = arrowEndY + arrowVectorPY * this.spacing;
+
+        let pc1X = this.p1X - this.center;
+        let pc1Y = this.p1Y - this.center;
+        let pc2X = this.p2X - this.center;
+        let pc2Y = this.p2Y - this.center;
+
+        // Step 2: Calculate starting and endpoints for the arcs of the ringpart
+        // Idea: Intersect the parallel line with the outer circle and the inner circle
+
+        
+        // calculate intersections
+        // Source: https://mathworld.wolfram.com/Circle-LineIntersection.html
+        let dx = pc2X - pc1X;
+        let dy = pc2Y - pc1Y;
+        let D = pc1X*pc2Y-pc2X*pc1Y;
+
+        let arcC1X = this.calculateIntersectionX(dx,dy,D,this.outerCircleRadius);
+        let arcC1Y = this.calculateIntersectionY(dx,dy,D,this.outerCircleRadius);
+        let arcC2X = this.calculateIntersectionX(dx,dy,D,this.outerCircleRadius - this.outerCircleThickness);
+        let arcC2Y = this.calculateIntersectionY(dx,dy,D,this.outerCircleRadius - this.outerCircleThickness);
+
+        let arcC3X = Math.cos(this.angle) * arcC1X - Math.sin(this.angle) * arcC1Y;
+        let arcC3Y = Math.sin(this.angle) * arcC1X + Math.cos(this.angle) * arcC1Y;
+        let arcC4X = Math.cos(this.angle) * arcC2X - Math.sin(this.angle) * arcC2Y;
+        let arcC4Y = Math.sin(this.angle) * arcC2X + Math.cos(this.angle) * arcC2Y;
+
+        this.arc1X = arcC1X + this.center;
+        this.arc1Y = arcC1Y + this.center;
+
+        this.arc2X = arcC2X + this.center;
+        this.arc2Y = arcC2Y + this.center;
+
+        this.arc3X = -arcC3X + this.center;
+        this.arc3Y = arcC3Y + this.center;
+
+        this.arc4X = -arcC4X + this.center;
+        this.arc4Y = arcC4Y + this.center;
+
+        console.log("angle", this.angle);
+
+        console.log("arc1", this.arc1X,this.arc1Y);
+        console.log("arc2", this.arc2X,this.arc2Y);
+        console.log("arc3", this.arc3X,this.arc3Y);
+        console.log("arc4", this.arc4X,this.arc4Y);
+
+    }
+
+    calculateIntersectionX(dx,dy,D,r){
+        // Source: https://mathworld.wolfram.com/Circle-LineIntersection.html
+        let dr = Math.sqrt(dx*dx+dy*dy);
+        let x = (D*dy - Math.sign(dy)*dx*Math.sqrt(r*r*dr*dr-D*D))/ (dr*dr);
+        return x;
+    }
+    calculateIntersectionY(dx,dy,D,r){
+        // Source: https://mathworld.wolfram.com/Circle-LineIntersection.html
+        let dr = Math.sqrt(dx*dx+dy*dy);
+        let y = (-D*dx - Math.abs(dy)*Math.sqrt(r*r*dr*dr-D*D))/ (dr*dr);
+        return y;
     }
 
     // This would be a better way to create the outer ring part to make it compatible with Vector Graphics
     // editors like Inkscape, but it is not working yet... Each point needs to be calculated separately...
     createOuterRingPart(id) {
         const outerRingPart = this.svg.createPath("outerRingPart", `
-            M ${this.center - this.outerCircleRadius} ${this.center}
-            A ${this.outerCircleRadius} ${this.outerCircleRadius} 0 0 1 ${this.center + this.outerCircleRadius} ${this.center}
-            L ${this.center + this.outerCircleRadius - this.outerCircleThickness} ${this.center}
-            A ${this.outerCircleRadius - this.outerCircleThickness} ${this.outerCircleRadius - this.outerCircleThickness} 0 0 0 ${this.center - this.outerCircleRadius + this.outerCircleThickness} ${this.center}
+            M ${this.arc3X} ${this.arc3Y}
+            A ${this.outerCircleRadius} ${this.outerCircleRadius} 0 0 1 ${this.arc1X} ${this.arc1Y}
+            L  ${this.arc2X} ${this.arc2Y}
+            A ${this.outerCircleRadius - this.outerCircleThickness} ${this.outerCircleRadius - this.outerCircleThickness} 0 0 0 ${this.arc4X} ${this.arc4Y}
             Z
         `);
         outerRingPart.setAttribute("id", id);
         return outerRingPart;
     }
-
-    // This is the ugly way to create the outer ring part, but it is working...
-    createOuterRingMask(id) {
-        const canvas = this.svg.createRectangle("canvas", 0, 0, this.size, this.size);
-        canvas.setAttribute("fill", "white");
-
-        const arrows = this.arrangeArrows("mask-arrows");
-        arrows.setAttribute("fill", "black");
-        arrows.setAttribute("stroke", "black");
-        arrows.setAttribute("stroke-width", this.spacing * 2);
-
-        const circle = this.svg.createCircle("mask-circle", this.center, this.center, this.outerCircleDiameter - this.outerCircleThickness * 2);
-        circle.setAttribute("fill", "black");
-        circle.setAttribute("stroke", "none");
-
-        return this.svg.createMask(id, canvas, arrows, circle);
+    arrangeOuterRingParts(id) {
+        const ringParts = this.svg.createGroup(id);
+        for (let i = 0; i < this.numArrows; i++) {
+            const angle = (360 / this.numArrows) * i + this.rotation;
+            const ringPart = this.createOuterRingPart("arrow-" + (i+1));
+            ringPart.setAttribute("transform", `rotate(${angle} ${this.center} ${this.center})`);
+            ringParts.appendChild(ringPart);
+        }
+        return ringParts;
     }
+
+
 
     createArrow(id) {
         const arrow = this.svg.createPath(id, `
@@ -240,7 +319,6 @@ class LuxLogo {
     }
 
     generate() {
-
         // Calculate new absolute values and clear the SVG
         this.absCalc();
         this.svg.xml.innerHTML = "";
@@ -251,17 +329,14 @@ class LuxLogo {
         // Prepare elements
         const innerCircle = this.svg.createCircle("innerCircle", this.center, this.center, this.innerCircleDiameter);
         const arrows = this.arrangeArrows("arrows");
-        const outerRingMask = this.createOuterRingMask("outerRingMask");
         const outerRing = this.svg.createCircle("outerRing", this.center, this.center, this.outerCircleDiameter);
         outerRing.setAttribute("mask", "url(#outerRingMask)");
-        //const outerRingPart = this.createOuterRingPart("outerRingPart");
+        const outerRingParts = this.arrangeOuterRingParts("outerRingPart");
 
         // Append elements to the SVG
         this.svg.xml.appendChild(innerCircle);
         this.svg.xml.appendChild(arrows);
-        this.svg.xml.appendChild(outerRingMask);
-        this.svg.xml.appendChild(outerRing);
-        //this.svg.xml.appendChild(outerRingPart);
+        this.svg.xml.appendChild(outerRingParts);
 
         // Colorize it
         this.svg.xml.setAttribute("fill", this.color1);
