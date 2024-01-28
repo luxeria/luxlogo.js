@@ -321,6 +321,8 @@ class LuxLogo {
         return ringParts;
     }
 
+
+
     createArrow(id) {
         const arrow = this.svg.createPath(id, `
             M ${this.arrowPointLeft.str()}
