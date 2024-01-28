@@ -4,7 +4,6 @@ class SVGHelper {
     }
 
     _createSVG(id) {
-
         // Create the SVG element
         const xml = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         xml.setAttribute("id", id);
@@ -74,6 +73,16 @@ class SVGHelper {
         return path;
     }
 
+    createAnchor(id, href, ...objects) {
+        const anchor = document.createElementNS("http://www.w3.org/2000/svg", "a");
+        anchor.setAttribute("id", id);
+        anchor.setAttribute("xlink:href", href);
+        objects.forEach(object => {
+            anchor.appendChild(object);
+        });
+        return anchor;
+    }
+
     createGroup(id, ...objects) {
         const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
         group.setAttribute("id", id);
@@ -103,7 +112,6 @@ class SVGHelper {
             mask.appendChild(object);
             i++;
         });
-
         return mask;
     }
 
@@ -129,179 +137,199 @@ class SVGHelper {
 
 }
 
+// Helper class for dispacements (vectors), locations (coordinates) and other geometric calculations
+class Vector {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    // String representation
+    str(separator = " ") {  return `${this.x}${separator}${this.y}`; }
+
+    // Vector operations
+    add(other) {             return new Vector(this.x + other.x, this.y + other.y); }
+    subtract(other) {        return new Vector(this.x - other.x, this.y - other.y); }
+    scalarMultiply(scalar) { return new Vector(this.x * scalar, this.y * scalar); }
+    scalarAdd(scalar) {      return new Vector(this.x + scalar, this.y + scalar); }
+    negate() {               return new Vector(-this.x, -this.y); }
+    negateX() {              return new Vector(-this.x, this.y);  }
+    negateY() {              return new Vector(this.x, -this.y);  }
+    perpendicular() {        return new Vector(-this.y, this.x); }
+    determinate(other) {     return this.x * other.y - this.y * other.x; }
+    magnitude() {            return Math.sqrt(this.x * this.x + this.y * this.y); }
+
+    normalized() {
+        let mag = this.magnitude();
+        return new Vector(this.x / mag, this.y / mag);
+    }
+    
+    rotate(angle) {
+        let cos = Math.cos(angle);
+        let sin = Math.sin(angle);
+        let x = cos * this.x - sin * this.y;
+        let y = sin * this.x + cos * this.y;
+        return new Vector(-x, y);
+    }
+
+    circleIntersections(D,radius){
+        // Source: https://mathworld.wolfram.com/Circle-LineIntersection.html
+        // D, use determinate() function
+        let dr = this.magnitude();
+
+        // Calculate Incidece
+        let incidence = radius*radius * dr*dr - D*D;
+
+        let x1 = (D * this.y - Math.sign(this.y) * this.x * Math.sqrt(incidence)) / (dr*dr);
+        let y1 = (-D * this.x - Math.abs(this.y) * Math.sqrt(incidence)) / (dr*dr);
+        let x2 = (D * this.y + Math.sign(this.y) * this.x*Math.sqrt(incidence)) / (dr*dr);
+        let y2 = (-D * this.x + Math.abs(this.y) * Math.sqrt(incidence)) / (dr*dr);
+
+        if(incidence < 0){
+            // No intersection
+            return [new Vector(0,0), new Vector(0,0)];
+        } else if(incidence == 0){
+            // One intersection, tangent line
+            return [new Vector(x1, y1), new Vector(x1, y1)];
+        } else {
+            // Two intersections
+            return [new Vector(x1, y1), new Vector(x2, y2)];
+        }
+    }
+
+    // Arc Calculations
+    static calcArcHeight(radius, width) {
+        return radius - Math.sqrt(radius ** 2 - (width / 2) ** 2);
+    }
+
+    static calcArcTheta(radius, width) {
+        return 2 * Math.asin(width / (2 * radius));
+    }
+
+}
+
+
 class LuxLogo {
-    constructor() {
+    constructor(id) {
         // Constructor with intial values
-        this.svg = new SVGHelper("luxlogo_svg");
+        this.idPrefix = id;
+        this.container = document.getElementById(id);
+        this.svg = new SVGHelper(id + "_svg");
+        this.outString = "";
         this.size = 512;
         this.color1 = "#000000";
         this.color2 = "#ffffff";
         this.rotation = 0;
-        this.center = this.size / 2;
         this.numArrows = 3;
         this.relBorderThickness = 0;
         this.relSpacing = 8;
         this.relInnerCircleDiameter = 24;
-        this.relOuterCircleDiameter = 85;
-        this.relOuterCircleThickness = 12;
+        this.relArcDiameter = 85;
+        this.relArcThickness = 12;
         this.relArrowTipWidth = 25;
         this.relArrowTipStart = 20;
         this.relArrowTipEnd = 50;
         this.relArrowNotchOffset = 6;
         this.relArrowBaseWidth = 12;
-
-        // Calculate absolute values from relative values
-        //ToDo: Check if we can delete this:
-        //this.absCalc(); // Does not seem to be necessary
     }
 
     absCalc() {
         this.center = this.size / 2;
-        this.spacing = this.size * this.relSpacing / 1000;
-        this.borderThickness = this.size * this.relBorderThickness / 1000;
+        this.spacing = this.size * this.relSpacing / 100;
+        this.borderThickness = this.size * this.relBorderThickness / 100;
+        this.angle = 2*Math.PI / this.numArrows;
 
         this.innerCircleDiameter = this.size * this.relInnerCircleDiameter / 100;
         this.innerCircleRadius = this.innerCircleDiameter / 2;
-        this.outerCircleDiameter = this.size * this.relOuterCircleDiameter / 100;
-        this.outerCircleRadius = this.outerCircleDiameter / 2;
-        this.outerCircleThickness = this.size * this.relOuterCircleThickness / 100;
-
-        // Arrow Calculations
+        this.arcDiameter = this.size * this.relArcDiameter / 100;
+        this.arcRadius = this.arcDiameter / 2;
+        this.arcThickness = this.size * this.relArcThickness / 100;
         this.arrowTipWidth = this.size * this.relArrowTipWidth / 100;
-        this.arrowTipStart = this.center - this.size * this.relArrowTipStart / 100;
-        this.arrowTipEnd = this.center - this.size * this.relArrowTipEnd / 100;
-        this.arrowNotchOffset = this.size * this.relArrowNotchOffset / 1000;
+        this.arrowTipStart = -this.size * this.relArrowTipStart / 100;
+        this.arrowTipEnd = -this.size * this.relArrowTipEnd / 100;
+        this.arrowNotchOffset = this.size * this.relArrowNotchOffset / 100;
         this.arrowBaseWidth = this.size * this.relArrowBaseWidth / 100;
-        this.arrowBaseX = this.center - this.arrowBaseWidth / 2;
-        const circleSegmentRadius = this.innerCircleDiameter / 2 + this.spacing;
-        const circleSegmentLength = this.arrowBaseWidth;
-        const theta = 2 * Math.asin(circleSegmentLength / (2 * circleSegmentRadius));
-        this.arrowBaseOffsetCircleSegment = circleSegmentRadius - Math.sqrt(circleSegmentRadius ** 2 - (circleSegmentLength / 2) ** 2);
-        this.arrowBaseY = this.center - this.innerCircleDiameter / 2 - this.spacing + this.arrowBaseOffsetCircleSegment ;
 
-        // Outer Ring Part Calculations
-        
-        this.angle = 2*Math.PI / this.numArrows;
+        // Point Calculations for paths
+
+        // Arrow Part Calculations
+        // Idea: Calculate each point relative to the center and taking spacing and the arc (base of the arrow) into account
+        this.arrowPointLeft = new Vector(-this.arrowTipWidth / 2, this.arrowTipStart);
+        this.arrowPointRight = new Vector(this.arrowTipWidth / 2, this.arrowTipStart);
+        this.arrowPointTip = new Vector(0, this.arrowTipEnd);
+        this.arrowPointNotchLeft = new Vector(-this.arrowBaseWidth / 2, this.arrowTipStart - this.arrowNotchOffset);
+        this.arrowPointNotchRight = new Vector(this.arrowBaseWidth / 2, this.arrowTipStart - this.arrowNotchOffset);
+        this.arrowArcRadius = this.innerCircleDiameter / 2 + this.spacing;
+        this.arrowArcHeight = Vector.calcArcHeight(this.arrowArcRadius, this.arrowBaseWidth);
+        this.arrowPointBaseLeft = new Vector(-this.arrowBaseWidth / 2, -this.innerCircleDiameter / 2 - this.spacing + this.arrowArcHeight);
+        this.arrowPointBaseRight = new Vector(this.arrowBaseWidth / 2, -this.innerCircleDiameter / 2 - this.spacing + this.arrowArcHeight);
+
+        // Arc Part Calculations
+        // Idea: Create a nomalized vector, perpendicular to the arrow-side. Use it to offset the starting and endpoint
+        // then intersect the parallel line with the outer circle and the offset circle
 
         // Step 1: Calculate a parallel line to the side of the arrow, with distance "spacing"
-        // Idea: Create a nomalized vector, perpendicular to the arrow-side. Use it to offset the starting and endpoint
-        let arrowStartX = this.center - this.arrowTipWidth / 2;
-        let arrowStartY = this.arrowTipStart;
-        let arrowEndX = this.center;
-        let arrowEndY =  this.arrowTipEnd;
+        let arrowLineStart = this.arrowPointLeft
+        let arrowLineEnd = this.arrowPointTip
 
-        // Vector along the arrow
-        let arrowVectorX = arrowStartX - arrowEndX;
-        let arrowVectorY = arrowStartY - arrowEndY;
         // Normalize the vector (i.e. make it's length=1)
-        let n = Math.sqrt(arrowVectorX*arrowVectorX + arrowVectorY*arrowVectorY);
-        arrowVectorX = arrowVectorX/n;
-        arrowVectorY = arrowVectorY/n;
-        // rotate it by 90° CCW
-        let arrowVectorPX = -arrowVectorY;
-        let arrowVectorPY = arrowVectorX;
+        let arrowLineVector = new Vector(arrowLineStart.x - arrowLineEnd.x, arrowLineStart.y - arrowLineEnd.y).normalized();
+        let arrowLinePerpendicular = arrowLineVector.perpendicular();
 
         // Calculate Parallel line point 1 and point 2
-        this.p1X = arrowStartX + arrowVectorPX * this.spacing;
-        this.p1Y = arrowStartY + arrowVectorPY * this.spacing;
-        this.p2X = arrowEndX + arrowVectorPX * this.spacing;
-        this.p2Y = arrowEndY + arrowVectorPY * this.spacing;
-
-        let pc1X = this.p1X - this.center;
-        let pc1Y = this.p1Y - this.center;
-        let pc2X = this.p2X - this.center;
-        let pc2Y = this.p2Y - this.center;
-
-        // Step 2: Calculate starting and endpoints for the arcs of the ringpart
-        // Idea: Intersect the parallel line with the outer circle and the inner circle
-
+        this.parallelP1 = new Vector(arrowLineStart.x + arrowLinePerpendicular.x * this.spacing,
+                            arrowLineStart.y + arrowLinePerpendicular.y * this.spacing);
+        this.parallelP2 = new Vector(arrowLineEnd.x + arrowLinePerpendicular.x * this.spacing,
+                            arrowLineEnd.y + arrowLinePerpendicular.y * this.spacing);
         
+        // Step 2: Calculate starting and endpoints for the arcs of the ringpart
         // calculate intersections
-        // Source: https://mathworld.wolfram.com/Circle-LineIntersection.html
-        let dx = pc2X - pc1X;
-        let dy = pc2Y - pc1Y;
-        let D = pc1X*pc2Y-pc2X*pc1Y;
+        let parallelLineVector = this.parallelP2.subtract(this.parallelP1);
+        let D = this.parallelP1.determinate(this.parallelP2);
 
-        let arcC1X = this.calculateIntersectionX(dx,dy,D,this.outerCircleRadius);
-        let arcC1Y = this.calculateIntersectionY(dx,dy,D,this.outerCircleRadius);
-        let arcC2X = this.calculateIntersectionX(dx,dy,D,this.outerCircleRadius - this.outerCircleThickness);
-        let arcC2Y = this.calculateIntersectionY(dx,dy,D,this.outerCircleRadius - this.outerCircleThickness);
+        let intersections = parallelLineVector.circleIntersections(D, this.arcRadius)
+        this.arcPoint1    = intersections[0];
+        intersections     = parallelLineVector.circleIntersections(D, this.arcRadius - this.arcThickness)
+        this.arcPoint2    = intersections[0];
 
-        let arcC3X = Math.cos(this.angle) * arcC1X - Math.sin(this.angle) * arcC1Y;
-        let arcC3Y = Math.sin(this.angle) * arcC1X + Math.cos(this.angle) * arcC1Y;
-        let arcC4X = Math.cos(this.angle) * arcC2X - Math.sin(this.angle) * arcC2Y;
-        let arcC4Y = Math.sin(this.angle) * arcC2X + Math.cos(this.angle) * arcC2Y;
-
-        this.arc1X = arcC1X + this.center;
-        this.arc1Y = arcC1Y + this.center;
-
-        this.arc2X = arcC2X + this.center;
-        this.arc2Y = arcC2Y + this.center;
-
-        this.arc3X = -arcC3X + this.center;
-        this.arc3Y = arcC3Y + this.center;
-
-        this.arc4X = -arcC4X + this.center;
-        this.arc4Y = arcC4Y + this.center;
-
-        console.log("angle", this.angle);
-
-        console.log("arc1", this.arc1X,this.arc1Y);
-        console.log("arc2", this.arc2X,this.arc2Y);
-        console.log("arc3", this.arc3X,this.arc3Y);
-        console.log("arc4", this.arc4X,this.arc4Y);
+        // Rotated points
+        this.arcPoint3 = this.arcPoint1.rotate(this.angle);
+        this.arcPoint4 = this.arcPoint2.rotate(this.angle);
 
     }
 
-    calculateIntersectionX(dx,dy,D,r){
-        // Source: https://mathworld.wolfram.com/Circle-LineIntersection.html
-        let dr = Math.sqrt(dx*dx+dy*dy);
-        let x = (D*dy - Math.sign(dy)*dx*Math.sqrt(r*r*dr*dr-D*D))/ (dr*dr);
-        return x;
-    }
-    calculateIntersectionY(dx,dy,D,r){
-        // Source: https://mathworld.wolfram.com/Circle-LineIntersection.html
-        let dr = Math.sqrt(dx*dx+dy*dy);
-        let y = (-D*dx - Math.abs(dy)*Math.sqrt(r*r*dr*dr-D*D))/ (dr*dr);
-        return y;
-    }
-
-    // This would be a better way to create the outer ring part to make it compatible with Vector Graphics
-    // editors like Inkscape, but it is not working yet... Each point needs to be calculated separately...
-    createOuterRingPart(id) {
-        const outerRingPart = this.svg.createPath("outerRingPart", `
-            M ${this.arc3X} ${this.arc3Y}
-            A ${this.outerCircleRadius} ${this.outerCircleRadius} 0 0 1 ${this.arc1X} ${this.arc1Y}
-            L  ${this.arc2X} ${this.arc2Y}
-            A ${this.outerCircleRadius - this.outerCircleThickness} ${this.outerCircleRadius - this.outerCircleThickness} 0 0 0 ${this.arc4X} ${this.arc4Y}
+    createArc(id) {
+        const arcPart = this.svg.createPath("arcPart", `
+            M ${this.arcPoint2.str()}
+            A ${this.arcRadius - this.arcThickness} ${this.arcRadius - this.arcThickness} 0 0 0 ${this.arcPoint4.str()}
+            L ${this.arcPoint3.str()}
+            A ${this.arcRadius} ${this.arcRadius} 0 0 1 ${this.arcPoint1.str()}
             Z
         `);
-        outerRingPart.setAttribute("id", id);
-        return outerRingPart;
+        arcPart.setAttribute("id", id);
+        return arcPart;
     }
-    arrangeOuterRingParts(id) {
+
+    arrangeArcs(id) {
         const ringParts = this.svg.createGroup(id);
         for (let i = 0; i < this.numArrows; i++) {
             const angle = (360 / this.numArrows) * i + this.rotation;
-            const ringPart = this.createOuterRingPart("arrow-" + (i+1));
-            ringPart.setAttribute("transform", `rotate(${angle} ${this.center} ${this.center})`);
+            const ringPart = this.createArc("arc-" + (i+1));
+            ringPart.setAttribute("transform", `rotate(${angle} 0 0)`);
             ringParts.appendChild(ringPart);
         }
         return ringParts;
     }
 
-
-
     createArrow(id) {
         const arrow = this.svg.createPath(id, `
-            M ${this.center - this.arrowTipWidth / 2} ${this.arrowTipStart}
-            L ${this.center} ${this.arrowTipEnd}
-            L ${this.center + this.arrowTipWidth / 2} ${this.arrowTipStart}
-            L ${this.center + this.arrowBaseWidth / 2} ${this.arrowTipStart - this.arrowNotchOffset}
-            L ${this.center + this.arrowBaseWidth / 2} ${this.arrowBaseY}
-            A ${this.innerCircleRadius + this.spacing} ${this.innerCircleRadius + this.spacing} 0 0 0 ${this.center - this.arrowBaseWidth / 2} ${this.arrowBaseY}
-            L ${this.center - this.arrowBaseWidth / 2} ${this.arrowTipStart - this.arrowNotchOffset}
-            L ${this.center - this.arrowTipWidth / 2} ${this.arrowTipStart}
+            M ${this.arrowPointLeft.str()}
+            L ${this.arrowPointTip.str()}
+            L ${this.arrowPointRight.str()}
+            L ${this.arrowPointNotchRight.str()}
+            L ${this.arrowPointBaseRight.str()}
+            A ${this.arrowArcRadius} ${this.arrowArcRadius} 0 0 0 ${this.arrowPointBaseLeft.str()}
+            L ${this.arrowPointNotchLeft.str()}
             Z
         `);
         return arrow;
@@ -312,7 +340,7 @@ class LuxLogo {
         for (let i = 0; i < this.numArrows; i++) {
             const angle = (360 / this.numArrows) * i + this.rotation;
             const arrow = this.createArrow("arrow-" + (i+1));
-            arrow.setAttribute("transform", `rotate(${angle} ${this.center} ${this.center})`);
+            arrow.setAttribute("transform", `rotate(${angle} 0 0)`);
             arrows.appendChild(arrow);
         }
         return arrows;
@@ -324,19 +352,16 @@ class LuxLogo {
         this.svg.xml.innerHTML = "";
 
         // Set the new SVG viewBox size
-        this.svg.xml.setAttribute("viewBox", `0 0 ${this.size} ${this.size}`);
+        this.svg.xml.setAttribute("viewBox", `${-this.size/2} ${-this.size/2} ${this.size} ${this.size}`);
 
         // Prepare elements
-        const innerCircle = this.svg.createCircle("innerCircle", this.center, this.center, this.innerCircleDiameter);
-        const arrows = this.arrangeArrows("arrows");
-        const outerRing = this.svg.createCircle("outerRing", this.center, this.center, this.outerCircleDiameter);
-        outerRing.setAttribute("mask", "url(#outerRingMask)");
-        const outerRingParts = this.arrangeOuterRingParts("outerRingPart");
+        let innerCircle = this.svg.createCircle("innerCircle", 0, 0, this.innerCircleDiameter);
+        let arrows = this.arrangeArrows("arrows");
+        let arcParts = this.arrangeArcs("arcs");
 
         // Append elements to the SVG
-        this.svg.xml.appendChild(innerCircle);
-        this.svg.xml.appendChild(arrows);
-        this.svg.xml.appendChild(outerRingParts);
+        let partsGroup = this.svg.createGroup(this.idPrefix + "-group", innerCircle, arrows, arcParts);
+        this.svg.xml.appendChild(partsGroup);
 
         // Colorize it
         this.svg.xml.setAttribute("fill", this.color1);
@@ -344,8 +369,9 @@ class LuxLogo {
         this.svg.xml.setAttribute("stroke-width", this.borderThickness);
 
         // Return the SVG as a string
-        return this.svg.xml.outerHTML;
-
+        this.outString = this.svg.xml.outerHTML
+        this.container.innerHTML = this.outString;
+        return true;
     }
 
 }

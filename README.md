@@ -16,19 +16,18 @@ Include the luxlogo.js file in your HTML page:
 <script src="https://luxeria.ch/luxlogo.js/js/luxlogo.js"></script>
 ```
 
-Then instantiate the LuxLogo class and manipulate the variables. Finally call the generate() method which returns SVG/XML code.
+Then instantiate the LuxLogo class with the id of the container and manipulate the variables. Finally call the generate() method which fills the SVG/XML code into the container.
 
 ```html
 <script>
-const logo = new LuxLogo();
-logo.rotation = 45;
+const logo = new LuxLogo("logo-container");
+logo.rotation = 20;
 logo.color1 = "#ff0000";
 logo.numArrows = 3;
-
-document.getElementById("logo").innerHTML = logo.generate();
+logo.generate();
 </script>
 
-<div id="logo"><!-- SVG goes here --></div>
+<div id="logo-container"><!-- SVG goes here --></div>
 ```
 
 ## Variables / Parameters
@@ -43,19 +42,24 @@ All `rel`-variables are relative to the `size`-variable.
 | rotation                 | Rotation angle in degrees                    | 0           |
 | numArrows                | Number of arrows in the logo                 | 3           |
 | relBorderThickness       | ‰ Relative border thickness                  | 0           |
-| relSpacing               | ‰ Relative spacing between arrows            | 40          |
+| relSpacing               | ‰ Relative spacing between arrows            | 4           |
 | relInnerCircleDiameter   | % Relative diameter of the inner circle      | 24          |
-| relOuterCircleDiameter   | % Relative diameter of the outer circle      | 84          |
-| relOuterCircleThickness  | % Relative thickness of the outer circle     | 12          |
+| relArcDiameter           | % Relative diameter of the arcs              | 84          |
+| relArcThickness          | % Relative thickness of the arcs             | 12          |
 | relArrowTipWidth         | % Relative width of the arrow tip            | 24          |
 | relArrowTipStart         | % Relative start of the arrow tip from center| 20          |
 | relArrowTipEnd           | % Relative end of the arrow tip from center  | 50          |
-| relArrowNotchOffset      | ‰ Relative offset of the arrow notch         | 24          |
+| relArrowNotchOffset      | ‰ Relative offset of the arrow notch         | 2.4         |
 | relArrowBaseWidth        | % Relative width of the arrow base           | 12          |
 
 ## To-Do
 
 - [x] Fix sizing issues, display size, viewport and size of the serialized SVG file (fixed by adding a viewBox)
-- [ ] Fix masking/grouping to allow for proper borders (partially fixed by turning the arrows into paths)
+- [x] Fix masking/grouping to allow for proper borders (fixed by turning all shapes into paths)
+- [x] Add ID's to all elements
+- [x] Change viewBox starting point to size/2 coordinates: all center-calculations can then be removed
+- [ ] Add support for less than 2 arrows
+- [ ] Add optional href links to all elements
 - [ ] Add support for different colors for each part (gradient support maybe?)
+- [ ] Add a minified "luxlogo-min.js" version of the library
 - [ ] **Let's find new defaults!** As in: How do you want our logo to look like on the website and in print?
